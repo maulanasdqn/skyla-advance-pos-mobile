@@ -127,10 +127,11 @@ private fun AdjustmentListItem(adjustment: InventoryAdjustment) {
                 QuantityChangeText(quantityChange = adjustment.quantityChange)
             }
 
-            if (!adjustment.notes.isNullOrBlank()) {
+            val notes = adjustment.notes
+            if (!notes.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = adjustment.notes,
+                    text = notes,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

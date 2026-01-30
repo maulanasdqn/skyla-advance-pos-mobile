@@ -117,6 +117,11 @@ fun LoginScreen(
                 placeholder = "Enter your password",
                 leadingIcon = Icons.Default.Lock,
                 keyboardType = KeyboardType.Password,
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
