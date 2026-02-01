@@ -1,11 +1,7 @@
 package com.skyla.pos.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,13 +15,34 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.skyla.pos.auth.presentation.login.LoginScreen
 import com.skyla.pos.auth.presentation.password.ChangePasswordScreen
+import com.skyla.pos.categories.presentation.form.CategoryFormScreen
+import com.skyla.pos.categories.presentation.list.CategoryListScreen
+import com.skyla.pos.customers.presentation.detail.CustomerDetailScreen
+import com.skyla.pos.customers.presentation.form.CustomerFormScreen
+import com.skyla.pos.customers.presentation.list.CustomerListScreen
+import com.skyla.pos.dashboard.presentation.DashboardScreen
+import com.skyla.pos.inventory.presentation.adjustment.InventoryAdjustmentFormScreen
+import com.skyla.pos.inventory.presentation.adjustment.InventoryAdjustmentListScreen
+import com.skyla.pos.inventory.presentation.list.InventoryListScreen
 import com.skyla.pos.model.SaleStatus
 import com.skyla.pos.payments.presentation.PaymentScreen
+import com.skyla.pos.products.presentation.detail.ProductDetailScreen
+import com.skyla.pos.products.presentation.form.ProductFormScreen
+import com.skyla.pos.products.presentation.list.ProductListScreen
+import com.skyla.pos.reports.presentation.CashierPerformanceScreen
+import com.skyla.pos.reports.presentation.DailySalesReportScreen
+import com.skyla.pos.reports.presentation.InventoryReportScreen
+import com.skyla.pos.reports.presentation.PaymentMethodsReportScreen
+import com.skyla.pos.reports.presentation.ReportsDashboardScreen
+import com.skyla.pos.reports.presentation.TopProductsReportScreen
 import com.skyla.pos.sales.presentation.list.SalesListScreen
 import com.skyla.pos.sales.presentation.pos.PosScreen
 import com.skyla.pos.sales.presentation.receipt.ReceiptScreen
 import com.skyla.pos.ui.MoreMenuScreen
 import com.skyla.pos.ui.SettingsScreen
+import com.skyla.pos.users.presentation.detail.UserDetailScreen
+import com.skyla.pos.users.presentation.form.UserFormScreen
+import com.skyla.pos.users.presentation.list.UserListScreen
 
 @Composable
 fun SkylaApp() {
@@ -136,14 +153,26 @@ fun SkylaApp() {
 
             // Products
             composable(Screen.ProductList.route) {
-                PlaceholderScreen(title = "Products")
+                ProductListScreen(
+                    onNavigateToDetail = { productId ->
+                        navController.navigate(Screen.ProductDetail.createRoute(productId))
+                    },
+                    onNavigateToForm = { productId ->
+                        navController.navigate(Screen.ProductForm.createRoute(productId))
+                    },
+                )
             }
 
             composable(
                 route = Screen.ProductDetail.route,
                 arguments = listOf(navArgument("productId") { type = NavType.StringType }),
             ) {
-                PlaceholderScreen(title = "Product Detail")
+                ProductDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToEdit = { productId ->
+                        navController.navigate(Screen.ProductForm.createRoute(productId))
+                    },
+                )
             }
 
             composable(
@@ -156,12 +185,19 @@ fun SkylaApp() {
                     },
                 ),
             ) {
-                PlaceholderScreen(title = "Product Form")
+                ProductFormScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onProductSaved = { navController.popBackStack() },
+                )
             }
 
             // Categories
             composable(Screen.CategoryList.route) {
-                PlaceholderScreen(title = "Categories")
+                CategoryListScreen(
+                    onNavigateToForm = { categoryId ->
+                        navController.navigate(Screen.CategoryForm.createRoute(categoryId))
+                    },
+                )
             }
 
             composable(
@@ -174,19 +210,34 @@ fun SkylaApp() {
                     },
                 ),
             ) {
-                PlaceholderScreen(title = "Category Form")
+                CategoryFormScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onCategorySaved = { navController.popBackStack() },
+                )
             }
 
             // Customers
             composable(Screen.CustomerList.route) {
-                PlaceholderScreen(title = "Customers")
+                CustomerListScreen(
+                    onNavigateToDetail = { customerId ->
+                        navController.navigate(Screen.CustomerDetail.createRoute(customerId))
+                    },
+                    onNavigateToForm = { customerId ->
+                        navController.navigate(Screen.CustomerForm.createRoute(customerId))
+                    },
+                )
             }
 
             composable(
                 route = Screen.CustomerDetail.route,
                 arguments = listOf(navArgument("customerId") { type = NavType.StringType }),
             ) {
-                PlaceholderScreen(title = "Customer Detail")
+                CustomerDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToEdit = { customerId ->
+                        navController.navigate(Screen.CustomerForm.createRoute(customerId))
+                    },
+                )
             }
 
             composable(
@@ -199,37 +250,71 @@ fun SkylaApp() {
                     },
                 ),
             ) {
-                PlaceholderScreen(title = "Customer Form")
+                CustomerFormScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onCustomerSaved = { navController.popBackStack() },
+                )
             }
 
             // Dashboard
             composable(Screen.Dashboard.route) {
-                PlaceholderScreen(title = "Dashboard")
+                DashboardScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
             }
 
             // Inventory
             composable(Screen.InventoryList.route) {
-                PlaceholderScreen(title = "Inventory")
+                InventoryListScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToAdjustmentForm = {
+                        navController.navigate(Screen.InventoryAdjustmentForm.route)
+                    },
+                    onNavigateToAdjustmentHistory = {
+                        navController.navigate(Screen.InventoryAdjustmentList.route)
+                    },
+                )
             }
 
             composable(Screen.InventoryAdjustmentForm.route) {
-                PlaceholderScreen(title = "Inventory Adjustment")
+                InventoryAdjustmentFormScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onAdjustmentCreated = { navController.popBackStack() },
+                )
             }
 
             composable(Screen.InventoryAdjustmentList.route) {
-                PlaceholderScreen(title = "Inventory Adjustments")
+                InventoryAdjustmentListScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToForm = {
+                        navController.navigate(Screen.InventoryAdjustmentForm.route)
+                    },
+                )
             }
 
             // Users
             composable(Screen.UserList.route) {
-                PlaceholderScreen(title = "Users")
+                UserListScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToDetail = { userId ->
+                        navController.navigate(Screen.UserDetail.createRoute(userId))
+                    },
+                    onNavigateToForm = { userId ->
+                        navController.navigate(Screen.UserForm.createRoute(userId))
+                    },
+                )
             }
 
             composable(
                 route = Screen.UserDetail.route,
                 arguments = listOf(navArgument("userId") { type = NavType.StringType }),
             ) {
-                PlaceholderScreen(title = "User Detail")
+                UserDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToEdit = { userId ->
+                        navController.navigate(Screen.UserForm.createRoute(userId))
+                    },
+                )
             }
 
             composable(
@@ -242,32 +327,62 @@ fun SkylaApp() {
                     },
                 ),
             ) {
-                PlaceholderScreen(title = "User Form")
+                UserFormScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onUserSaved = { navController.popBackStack() },
+                )
             }
 
             // Reports
             composable(Screen.ReportsDashboard.route) {
-                PlaceholderScreen(title = "Reports")
+                ReportsDashboardScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToDailySales = {
+                        navController.navigate(Screen.DailySalesReport.route)
+                    },
+                    onNavigateToTopProducts = {
+                        navController.navigate(Screen.TopProductsReport.route)
+                    },
+                    onNavigateToInventory = {
+                        navController.navigate(Screen.InventoryReport.route)
+                    },
+                    onNavigateToCashierPerformance = {
+                        navController.navigate(Screen.CashierPerformance.route)
+                    },
+                    onNavigateToPaymentMethods = {
+                        navController.navigate(Screen.PaymentMethodsReport.route)
+                    },
+                )
             }
 
             composable(Screen.DailySalesReport.route) {
-                PlaceholderScreen(title = "Daily Sales Report")
+                DailySalesReportScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
             }
 
             composable(Screen.TopProductsReport.route) {
-                PlaceholderScreen(title = "Top Products Report")
+                TopProductsReportScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
             }
 
             composable(Screen.InventoryReport.route) {
-                PlaceholderScreen(title = "Inventory Report")
+                InventoryReportScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
             }
 
             composable(Screen.CashierPerformance.route) {
-                PlaceholderScreen(title = "Cashier Performance")
+                CashierPerformanceScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
             }
 
             composable(Screen.PaymentMethodsReport.route) {
-                PlaceholderScreen(title = "Payment Methods Report")
+                PaymentMethodsReportScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                )
             }
 
             // Change Password
@@ -325,15 +440,3 @@ fun SkylaApp() {
     }
 }
 
-@Composable
-private fun PlaceholderScreen(title: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineMedium,
-        )
-    }
-}

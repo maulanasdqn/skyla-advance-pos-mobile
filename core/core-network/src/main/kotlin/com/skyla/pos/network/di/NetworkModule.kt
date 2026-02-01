@@ -3,6 +3,8 @@ package com.skyla.pos.network.di
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.skyla.pos.common.Constants
 import com.skyla.pos.network.AuthInterceptor
+import com.skyla.pos.network.BuildConfig
+import com.skyla.pos.network.MockInterceptor
 import com.skyla.pos.network.TokenRefreshAuthenticator
 import dagger.Module
 import dagger.Provides
@@ -42,10 +44,20 @@ object NetworkModule {
             }
         }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
+        val builder = OkHttpClient.Builder()
+
+        if (BuildConfig.DEBUG) {
+            // In debug mode, use MockInterceptor to return fake data
+            // so the app can be tested without a real backend
+            builder.addInterceptor(MockInterceptor())
+        } else {
+            builder
+                .addInterceptor(authInterceptor)
+                .authenticator(tokenRefreshAuthenticator)
+        }
+
+        return builder
             .addInterceptor(loggingInterceptor)
-            .authenticator(tokenRefreshAuthenticator)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
